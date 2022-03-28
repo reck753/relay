@@ -37,8 +37,17 @@ type User implements Node {
   avatarUrl: String
   isOnline: Boolean
   onlineStatus: OnlineStatus
+  onlineStatuses_1: [OnlineStatus]!
+  onlineStatuses_2: [OnlineStatus]
+  onlineStatuses_3: [OnlineStatus!]
+  onlineStatuses_4: [OnlineStatus!]!
   nicknames: [String!]!
   createdAt: Datetime!
+  createdAt_1: [Datetime]!
+  createdAt_2: [Datetime]
+  createdAt_3: [Datetime!]
+  createdAt_4: [Datetime!]!
+  bestFriend: User
   friends(beforeDate: Datetime): [User!]!
   friendsConnection(
     statuses: [OnlineStatus!]

@@ -21,6 +21,12 @@ pub enum ScalarValues {
 }
 
 #[derive(Debug, Clone)]
+pub struct RecordReferenceInfo {
+    pub name: String,
+    pub at_path: Vec<String>,
+}
+
+#[derive(Debug, Clone)]
 pub enum PropType {
     DataId,
     Scalar(ScalarValues),
@@ -29,7 +35,7 @@ pub enum PropType {
     Array((bool, Box<PropType>)),
     FragmentSpreads(Vec<String>),
     InputObjectReference(String),
-    RecordReference(String),
+    RecordReference(RecordReferenceInfo),
     UnionReference(String),
     RelayResolver(String),
 
@@ -92,6 +98,7 @@ pub enum Context {
     Response,
     RawResponse,
     Variables,
+    UpdatableOperation,
     RootObject(String),
 
     // TODO: This doesn't really make sense, but it uncovered the need for a

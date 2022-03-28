@@ -8,7 +8,7 @@ use schema::SDLSchema;
 
 use crate::{
     rescript::DefinitionType,
-    rescript_ast::{Context, ConverterInstructions, FullEnum},
+    rescript_ast::{Context, ConverterInstructions, FullEnum, PropType, PropValue},
     rescript_relay_visitor::{RescriptRelayOperationMetaData, RescriptRelayVisitor},
     writer::{Prop, AST},
 };
@@ -17,6 +17,52 @@ use std::fmt::{Result, Write};
 
 pub fn uncapitalize_string(str: &String) -> String {
     str[..1].to_lowercase().add(&str[1..])
+}
+
+pub fn capitalize_string(str: &String) -> String {
+    str[..1].to_uppercase().add(&str[1..])
+}
+
+pub fn get_updater_module_name(at_path: &Vec<String>) -> String {
+    capitalize_string(&path_to_name(&at_path[1..].to_vec()))
+}
+
+pub fn can_optimize_updater(value: &PropValue) -> bool {
+    if value.nullable {
+        return false;
+    }
+
+    match value.prop_type.as_ref() {
+        PropType::Scalar(_)
+        | PropType::StringLiteral(_)
+        | PropType::Enum(_)
+        | PropType::Array((false, _)) => true,
+        _ => false,
+    }
+}
+
+pub fn get_updater_wrap_code(prop_type: &PropType) -> String {
+    format!(
+        "{}",
+        match prop_type {
+            PropType::RawIdentifier(raw_identifier) =>
+                match classify_rescript_value_string(&raw_identifier) {
+                    RescriptCustomTypeValue::Type => String::from("value"),
+                    RescriptCustomTypeValue::Module =>
+                        format!("{}.serialize(value)", raw_identifier),
+                },
+            PropType::Array((nullable_contents, inner_prop_type)) =>
+                if *nullable_contents {
+                    format!("value->Belt.Array.map(value => switch value {{ | None => Js.Nullable.null | Some(value) => Js.Nullable.fromOption(Some({})) }})", get_updater_wrap_code(inner_prop_type.as_ref()))
+                } else {
+                    format!(
+                        "value->Belt.Array.map(value => {})",
+                        get_updater_wrap_code(inner_prop_type.as_ref())
+                    )
+                },
+            _ => String::from("value"),
+        }
+    )
 }
 
 pub fn path_to_name(path: &Vec<String>) -> String {
@@ -177,7 +223,7 @@ pub fn root_name_from_context(context: &Context) -> String {
         Context::Response => String::from("response"),
         Context::RootObject(root_object_name) => root_object_name.to_string(),
         Context::Variables => String::from("variables"),
-        Context::NotRelevant => String::new(),
+        Context::UpdatableOperation | Context::NotRelevant => String::new(),
     }
 }
 

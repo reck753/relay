@@ -92,7 +92,7 @@ impl ArtifactContent {
                 reader_operation,
                 typegen_operation,
                 source_hash,
-            } => generate_updatable_query(
+            } => generate_updatable_query_rescript(
                 config,
                 project_config,
                 printer,
@@ -177,7 +177,7 @@ fn write_react_flight_client_annotation(
     Ok(())
 }
 
-#[allow(clippy::too_many_arguments)]
+#[allow(clippy::too_many_arguments, dead_code)]
 fn generate_updatable_query(
     config: &Config,
     project_config: &ProjectConfig,
@@ -853,6 +853,107 @@ fn write_source_hash(
     }
 
     Ok(())
+}
+
+/**
+ * RescriptRelay note: This is intentionally a separate function, copied
+ * from the original one, in order to make it easier to maintain the
+ * fork/see what differences we've applied to support RescriptRelay.
+ */
+#[allow(clippy::too_many_arguments)]
+fn generate_updatable_query_rescript(
+    config: &Config,
+    project_config: &ProjectConfig,
+    printer: &mut Printer<'_>,
+    schema: &SDLSchema,
+    reader_operation: &OperationDefinition,
+    typegen_operation: &OperationDefinition,
+    source_hash: String,
+    skip_types: bool,
+) -> Result<Vec<u8>, FmtError> {
+    let operation_fragment = FragmentDefinition {
+        name: reader_operation.name,
+        variable_definitions: reader_operation.variable_definitions.clone(),
+        selections: reader_operation.selections.clone(),
+        used_global_variables: Default::default(),
+        directives: reader_operation.directives.clone(),
+        type_condition: reader_operation.type_,
+    };
+    let mut content = String::new();
+
+    let generated_types = ArtifactGeneratedTypes {
+        imported_types: "UpdatableQuery, ConcreteUpdatableQuery",
+        ast_type: "ConcreteUpdatableQuery",
+        exported_type: Some(format!(
+            "UpdatableQuery<\n  {name}$variables,\n  {name}$data,\n>",
+            name = reader_operation.name.item
+        )),
+    };
+
+    if project_config.typegen_config.language == TypegenLanguage::Flow {
+        writeln!(content, "/*::")?;
+    }
+
+    write_import_type_from(
+        &project_config.typegen_config.language,
+        &mut content,
+        generated_types.imported_types,
+        "relay-runtime",
+    )?;
+
+    if !skip_types {
+        write!(
+            content,
+            "{}",
+            generate_operation_type_exports_section(
+                typegen_operation,
+                reader_operation,
+                schema,
+                project_config,
+            )
+        )?;
+    }
+
+    match project_config.typegen_config.language {
+        TypegenLanguage::Flow => writeln!(content, "*/\n")?,
+        TypegenLanguage::TypeScript => writeln!(content)?,
+        TypegenLanguage::ReScript => writeln!(content)?,
+    }
+
+    let request = printer.print_updatable_query(schema, &operation_fragment);
+
+    write_variable_value_with_type(
+        &project_config.typegen_config.language,
+        &mut content,
+        "node",
+        generated_types.ast_type,
+        &request,
+    )?;
+
+    write_source_hash(
+        config,
+        &project_config.typegen_config.language,
+        &mut content,
+        &source_hash,
+    )?;
+
+    // Print operation node types
+    writeln!(
+        content,
+        "type relayOperationNode\ntype operationType = RescriptRelay.updatableOperationNode<relayOperationNode>\n\n"
+        
+    )
+    .unwrap();
+
+    // Print node type
+    writeln!(
+        content,
+        "{}",
+        super::rescript_relay_utils::rescript_make_operation_type_and_node_text(&request)
+    )
+    .unwrap();
+
+    Ok(content.into_bytes())
 }
 
 /**
