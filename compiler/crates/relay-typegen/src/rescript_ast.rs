@@ -84,7 +84,7 @@ pub struct FullEnum {
 #[derive(Debug, Clone)]
 pub enum ConverterInstructions {
     ConvertUnion(String),
-    ConvertCustomField(String),
+    ConvertCustomField(String, bool),
     HasFragments,
     BlockTraversal(bool),
     ConvertTopLevelNodeField(String),
