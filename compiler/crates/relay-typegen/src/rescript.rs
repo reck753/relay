@@ -2666,7 +2666,7 @@ impl Writer for ReScriptPrinter {
                                 // the keys, which means this works out.
                                 writeln!(
                                     generated_types,
-                                    "get: () => Internal.convertVariables(Js.Dict.fromArray([(\"{}\", {}.get())]))->Js.Dict.unsafeGet(\"{}\"),",
+                                    "get: () => Internal.convertVariables(Js.Dict.fromArray([(\"{}\", {}.get())])->Obj.magic)->Obj.magic->Js.Dict.unsafeGet(\"{}\"),",
                                     key, module_name, key
                                 )
                                 .unwrap();

@@ -126,11 +126,11 @@ type providedVariablesType = {
 let providedVariablesDefinition: providedVariablesType = {
   __relay_internal__pv__TestProvidedVariablesSomeInput: {
     providedVariable: TestProvidedVariables.SomeInput.get,
-    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__TestProvidedVariablesSomeInput", TestProvidedVariables.SomeInput.get())]))->Js.Dict.unsafeGet("__relay_internal__pv__TestProvidedVariablesSomeInput"),
+    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__TestProvidedVariablesSomeInput", TestProvidedVariables.SomeInput.get())])->Obj.magic)->Obj.magic->Js.Dict.unsafeGet("__relay_internal__pv__TestProvidedVariablesSomeInput"),
   },
   __relay_internal__pv__TestProvidedVariablesInputB: {
     providedVariable: TestProvidedVariables.InputB.get,
-    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__TestProvidedVariablesInputB", TestProvidedVariables.InputB.get())]))->Js.Dict.unsafeGet("__relay_internal__pv__TestProvidedVariablesInputB"),
+    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__TestProvidedVariablesInputB", TestProvidedVariables.InputB.get())])->Obj.magic)->Obj.magic->Js.Dict.unsafeGet("__relay_internal__pv__TestProvidedVariablesInputB"),
   },
   __relay_internal__pv__TestProvidedVariablesBool: {
     providedVariable: TestProvidedVariables.Bool.get,
@@ -154,11 +154,11 @@ let providedVariablesDefinition: providedVariablesType = {
   },
   __relay_internal__pv__TestProvidedVariablesDatetime: {
     providedVariable: TestProvidedVariables.Datetime.get,
-    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__TestProvidedVariablesDatetime", TestProvidedVariables.Datetime.get())]))->Js.Dict.unsafeGet("__relay_internal__pv__TestProvidedVariablesDatetime"),
+    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__TestProvidedVariablesDatetime", TestProvidedVariables.Datetime.get())])->Obj.magic)->Obj.magic->Js.Dict.unsafeGet("__relay_internal__pv__TestProvidedVariablesDatetime"),
   },
   __relay_internal__pv__TestProvidedVariablesDatetimes: {
     providedVariable: TestProvidedVariables.Datetimes.get,
-    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__TestProvidedVariablesDatetimes", TestProvidedVariables.Datetimes.get())]))->Js.Dict.unsafeGet("__relay_internal__pv__TestProvidedVariablesDatetimes"),
+    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__TestProvidedVariablesDatetimes", TestProvidedVariables.Datetimes.get())])->Obj.magic)->Obj.magic->Js.Dict.unsafeGet("__relay_internal__pv__TestProvidedVariablesDatetimes"),
   },
 }
 
