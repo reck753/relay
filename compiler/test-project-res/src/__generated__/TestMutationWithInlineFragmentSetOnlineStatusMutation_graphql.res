@@ -53,7 +53,7 @@ module Internal = {
   @live
   let variablesConverterMap = ()
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let convertVariables: Types.variables => Types.variables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
@@ -67,7 +67,7 @@ module Internal = {
   @live
   let wrapResponseConverterMap = ()
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let convertWrapResponse: Types.response => Types.response = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
@@ -81,7 +81,7 @@ module Internal = {
   @live
   let responseConverterMap = ()
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let convertResponse: Types.response => Types.response = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
@@ -95,7 +95,7 @@ module Internal = {
   @live
   let wrapRawResponseConverterMap = ()
   @live
-  let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
+  let convertWrapRawResponse: Types.rawResponse => Types.rawResponse = v => v->RescriptRelay.convertObj(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
     Js.null
@@ -109,7 +109,7 @@ module Internal = {
   @live
   let rawResponseConverterMap = ()
   @live
-  let convertRawResponse = v => v->RescriptRelay.convertObj(
+  let convertRawResponse: Types.rawResponse => Types.rawResponse = v => v->RescriptRelay.convertObj(
     rawResponseConverter,
     rawResponseConverterMap,
     Js.undefined

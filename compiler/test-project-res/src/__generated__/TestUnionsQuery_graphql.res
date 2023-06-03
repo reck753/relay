@@ -109,7 +109,7 @@ module Internal = {
   @live
   let variablesConverterMap = ()
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let convertVariables: Types.variables => Types.variables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
@@ -126,7 +126,7 @@ module Internal = {
     "response_members_edges_node": wrap_response_members_edges_node,
   }
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let convertWrapResponse: Types.response => Types.response = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
@@ -143,7 +143,7 @@ module Internal = {
     "response_members_edges_node": unwrap_response_members_edges_node,
   }
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let convertResponse: Types.response => Types.response = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined

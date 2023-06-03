@@ -60,7 +60,7 @@ module Internal = {
     "fragment_memberOf": unwrap_fragment_memberOf,
   }
   @live
-  let convertFragment = v => v->RescriptRelay.convertObj(
+  let convertFragment: Types.fragment => Types.fragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
     Js.undefined

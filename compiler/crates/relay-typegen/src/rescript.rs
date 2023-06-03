@@ -1195,6 +1195,7 @@ fn write_internal_assets(
     state: &Box<ReScriptPrinter>,
     target_context: Context,
     name: String,
+    underlying_typename: String,
     include_raw: bool,
     direction: ConversionDirection,
     nullable_type: NullableType,
@@ -1288,8 +1289,8 @@ fn write_internal_assets(
     write_indentation(str, indentation).unwrap();
     writeln!(
         str,
-        "let convert{} = v => v->RescriptRelay.convertObj(",
-        uppercase_first_letter(name.as_str())
+        "let convert{}: Types.{} => Types.{} = v => v->RescriptRelay.convertObj(",
+        uppercase_first_letter(name.as_str()), underlying_typename, underlying_typename
     )
     .unwrap();
 
@@ -2236,6 +2237,7 @@ impl Writer for ReScriptPrinter {
                     &self,
                     Context::Fragment,
                     String::from("fragment"),
+                    String::from("fragment"),
                     true,
                     ConversionDirection::Unwrap,
                     NullableType::Undefined,
@@ -2252,6 +2254,7 @@ impl Writer for ReScriptPrinter {
                     indentation,
                     &self,
                     Context::Variables,
+                    String::from("variables"),
                     String::from("variables"),
                     false,
                     ConversionDirection::Wrap,
@@ -2284,6 +2287,7 @@ impl Writer for ReScriptPrinter {
                             &self,
                             Context::Response,
                             String::from("wrapResponse"),
+                            String::from("response"),
                             true,
                             ConversionDirection::Wrap,
                             NullableType::Null,
@@ -2298,6 +2302,7 @@ impl Writer for ReScriptPrinter {
                     indentation,
                     &self,
                     Context::Response,
+                    String::from("response"),
                     String::from("response"),
                     true,
                     ConversionDirection::Unwrap,
@@ -2318,6 +2323,7 @@ impl Writer for ReScriptPrinter {
                             &self,
                             Context::RawResponse,
                             String::from("wrapRawResponse"),
+                            String::from("rawResponse"),
                             true,
                             ConversionDirection::Wrap,
                             NullableType::Null,
@@ -2332,6 +2338,7 @@ impl Writer for ReScriptPrinter {
                     indentation,
                     &self,
                     Context::RawResponse,
+                    String::from("rawResponse"),
                     String::from("rawResponse"),
                     true,
                     ConversionDirection::Unwrap,

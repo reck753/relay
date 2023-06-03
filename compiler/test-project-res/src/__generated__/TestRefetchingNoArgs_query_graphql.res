@@ -22,7 +22,7 @@ module Internal = {
   @live
   let fragmentConverterMap = ()
   @live
-  let convertFragment = v => v->RescriptRelay.convertObj(
+  let convertFragment: Types.fragment => Types.fragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
     Js.undefined
