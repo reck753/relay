@@ -1185,6 +1185,42 @@ fn write_converter_map(
     Ok(())
 }
 
+fn write_converter_fn(
+    str: &mut String,
+    indentation: usize,
+    converter_fn_name: &String,
+    name: &String,
+    underlying_typename: &String,
+    nullable_type: &NullableType
+) -> Result {
+    write_suppress_dead_code_warning_annotation(str, indentation).unwrap();
+    write_indentation(str, indentation).unwrap();
+    writeln!(
+        str,
+        "let convert{}: Types.{} => Types.{} = v => v->RescriptRelay.convertObj(",
+        uppercase_first_letter(converter_fn_name.as_str()), underlying_typename, underlying_typename
+    )
+    .unwrap();
+
+    write_indentation(str, indentation + 1).unwrap();
+    writeln!(str, "{}Converter,", name).unwrap();
+    write_indentation(str, indentation + 1).unwrap();
+    writeln!(str, "{}ConverterMap,", name).unwrap();
+    write_indentation(str, indentation + 1).unwrap();
+    writeln!(
+        str,
+        "{}",
+        match nullable_type {
+            NullableType::Undefined => "Js.undefined",
+            NullableType::Null => "Js.null",
+        }
+    )
+    .unwrap();
+    write_indentation(str, indentation).unwrap();
+    writeln!(str, ")").unwrap();
+    Ok(())
+}
+
 // This writes "internal assets", which primarily is converters for going
 // between JS and ReScript runtime value representations. It's a total mess
 // right now and needs to be refactored, but I'll leave it like this for the
@@ -1284,32 +1320,21 @@ fn write_internal_assets(
         .collect();
 
     write_converter_map(str, indentation, &converters, &name, direction).unwrap();
+    write_converter_fn(str, indentation, &name, &name, &underlying_typename, &nullable_type).unwrap();
 
-    write_suppress_dead_code_warning_annotation(str, indentation).unwrap();
-    write_indentation(str, indentation).unwrap();
-    writeln!(
-        str,
-        "let convert{}: Types.{} => Types.{} = v => v->RescriptRelay.convertObj(",
-        uppercase_first_letter(name.as_str()), underlying_typename, underlying_typename
-    )
-    .unwrap();
-
-    write_indentation(str, indentation + 1).unwrap();
-    writeln!(str, "{}Converter,", name).unwrap();
-    write_indentation(str, indentation + 1).unwrap();
-    writeln!(str, "{}ConverterMap,", name).unwrap();
-    write_indentation(str, indentation + 1).unwrap();
-    writeln!(
-        str,
-        "{}",
-        match nullable_type {
-            NullableType::Undefined => "Js.undefined",
-            NullableType::Null => "Js.null",
-        }
-    )
-    .unwrap();
-    write_indentation(str, indentation).unwrap();
-    writeln!(str, ")").unwrap();
+    // Write refetchVariables converter if needed
+    match (&target_context, &state.typegen_definition) {
+        (&Context::Variables, &DefinitionType::Operation((
+            OperationDefinition {
+                kind: OperationKind::Query,
+                ..
+            },
+            _,
+        ))) => {
+            write_converter_fn(str, indentation, &String::from("refetchVariables"), &name, &String::from("refetchVariables"), &nullable_type).unwrap();
+        },
+        _ => ()
+    }
 
     Ok(())
 }

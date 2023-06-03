@@ -66,6 +66,12 @@ module Internal = {
     Js.undefined
   )
   @live
+  let convertRefetchVariables: Types.refetchVariables => Types.refetchVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
+  @live
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
