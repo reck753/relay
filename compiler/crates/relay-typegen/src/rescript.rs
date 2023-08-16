@@ -12,6 +12,7 @@ use graphql_syntax::OperationKind;
 use itertools::Itertools;
 use lazy_static::__Deref;
 use log::{debug, warn};
+use schema::SDLSchema;
 
 use crate::rescript_ast::*;
 use crate::rescript_relay_visitor::{
@@ -103,6 +104,9 @@ pub struct ReScriptPrinter {
 
     // Whether we have provided variables.
     pub provided_variables: Option<Vec<ProvidedVariable>>,
+
+    // Schema
+    pub schema: &SDLSchema
 }
 
 impl Write for ReScriptPrinter {
@@ -3102,8 +3106,10 @@ impl ReScriptPrinter {
     pub fn new(
         operation_meta_data: RescriptRelayOperationMetaData,
         typegen_definition: DefinitionType,
+        schema: &SDLSchema
     ) -> Self {
         Self {
+            schema: schema,
             enums: vec![],
             objects: vec![],
             input_objects: vec![],
