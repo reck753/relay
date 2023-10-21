@@ -845,7 +845,7 @@ fn write_abstract_validator_function(
             writer.write(&AST::Any)?;
             write!(writer, "{}) ", &close_comment)?;
         }
-        TypegenLanguage::TypeScript => {
+        TypegenLanguage::TypeScript | TypegenLanguage::ReScript => {
             write!(writer, "value ")?;
         }
     }
@@ -945,7 +945,7 @@ fn write_concrete_validator_function(
             writer.write(&AST::Any)?;
             write!(writer, "{}) ", &close_comment)?;
         }
-        TypegenLanguage::TypeScript => {
+        TypegenLanguage::TypeScript | TypegenLanguage::ReScript => {
             write!(writer, "value ")?;
         }
     }

@@ -11,8 +11,10 @@ use schema::Schema;
 use schema::TypeReference;
 
 use crate::Artifact;
+use crate::config::Config;
 
 pub(crate) fn rescript_generate_extra_artifacts(
+    _config: &Config,
     project_config: &ProjectConfig,
     schema: &SDLSchema,
     _programs: &Programs,
@@ -203,7 +205,7 @@ pub(crate) fn rescript_generate_extra_artifacts(
     });
 
     vec![Artifact {
-        source_definition_names: vec![],
+        artifact_source_keys: vec![],
         path: project_config.path_for_artifact(dummy_source_file, "RelaySchemaAssets".intern()),
         source_file: dummy_source_file,
         content: crate::ArtifactContent::Generic {
