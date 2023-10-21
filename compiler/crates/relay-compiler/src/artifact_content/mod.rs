@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-mod content;
-mod content_section;
-mod rescript_relay_utils;
+pub mod content;
+pub mod content_section;
+pub mod rescript_relay_utils;
 
 use std::sync::Arc;
 
@@ -21,10 +21,10 @@ use relay_codegen::QueryID;
 use relay_typegen::FragmentLocations;
 use schema::SDLSchema;
 
+use self::content::generate_fragment_rescript;
+use self::content::generate_operation_rescript;
 use crate::config::Config;
 use crate::config::ProjectConfig;
-
-use self::content::{generate_fragment_rescript, generate_operation_rescript};
 
 #[derive(Clone)]
 pub enum ArtifactContent {
